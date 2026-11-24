@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dental Mangystau — цифровая стоматология в Актау</title>
+<meta name="description" content="Dental Mangystau — цифровая стоматология в Актау. Имплантация, виниры, лечение под микроскопом, КТ-диагностика. Два филиала, рейтинг 4.9 в 2ГИС.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script>document.documentElement.classList.add('i18n-boot')</script>
+<noscript><style>.i18n-boot body{visibility:visible}</style></noscript>
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ink:#08141d;
+  --deep:#0e2231;
+  --mid:#17384c;
+  --steel:#2b5f79;
+  --haze:#6e9ab2;
+  --ice:#a9cadb;
+  --frost:#dceaf2;
+  --glass:rgba(255,255,255,.09);
+  --glass-2:rgba(255,255,255,.14);
+  --brd:rgba(255,255,255,.2);
+  --brd-soft:rgba(255,255,255,.1);
+  --txt:#eef6fa;
+  --txt-mut:#a7c4d4;
+  --radius:16px;
+  --radius-lg:24px;
+  --maxw:1320px;
+  --pad:clamp(16px,4vw,64px);
+  --hdr-h:160px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Manrope,-apple-system,Segoe UI,sans-serif;
+  color:var(--txt);
+  background:var(--deep);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* The glass cards need something behind them to refract — over a flat colour a
+   backdrop-filter blurs nothing. Soft light pools do that without putting a
+   picture behind the text. Fixed position rather than background-attachment,
+   which iOS Safari does not honour. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(58vw 48vh at 10% 6%,rgba(122,166,191,.20),transparent 64%),
+    radial-gradient(52vw 42vh at 92% 24%,rgba(169,202,219,.13),transparent 60%),
+    radial-gradient(66vw 52vh at 46% 62%,rgba(43,95,121,.26),transparent 66%),
+    radial-gradient(48vw 40vh at 84% 92%,rgba(122,166,191,.15),transparent 62%);
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-mut);font-weight:600}
+.muted{color:var(--txt-mut)}
+.count{font-size:13px;color:var(--txt-mut);font-weight:500}
+
+/* ---------- glass ---------- */
+.glass{
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.05));
+  border:1px solid var(--brd);
+  backdrop-filter:blur(22px) saturate(1.6);
+  -webkit-backdrop-filter:blur(22px) saturate(1.6);
+  border-radius:var(--radius);
+  /* The hairline along the top edge is what reads as a glass bevel. */
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 18px 44px rgba(5,16,24,.28);
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px 28px;border-radius:12px;border:0;cursor:pointer;
+  font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;
+  background:#fff;color:var(--ink);
+  transition:transform .2s,box-shadow .2s,background .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.btn--ghost{background:var(--glass-2);color:#fff;border:1px solid var(--brd);backdrop-filter:blur(14px)}
+.btn--ghost:hover{background:rgba(255,255,255,.22)}
+.cta-pair{display:inline-flex;gap:8px;align-items:stretch}
+.cta-pair .btn{padding-block:18px}
+
+/* ---------- header ---------- */
+.hdr{
+  position:fixed;inset:0 0 auto;z-index:60;
+  transition:background .3s,backdrop-filter .3s,border-color .3s;
+  border-bottom:1px solid transparent;
+}
+.hdr.is-stuck{
+  background:rgba(8,20,29,.72);
+  backdrop-filter:blur(20px);
+  border-bottom-color:var(--brd-soft);
+}
+/* Equal 1fr side columns are what put the nav dead centre, whatever the logo
+   and phone number measure. */
+/* max-width:none so the logo lines up with the hero headline's left gutter
+   instead of the narrower 1320px content column. */
+.hdr__in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;height:var(--hdr-h);max-width:none}
+/* Columns are pinned: hiding the nav removes it as a grid item, which would
+   otherwise pull the phone number into the middle track. */
+.logo{grid-column:1;display:block;justify-self:start}
+/* Vertical lockup (badge over wordmark), so it needs height to stay legible. */
+.logo img{display:block;height:136px;width:auto}
+.nav{grid-column:2;justify-self:center;display:flex;gap:18px;font-size:21px;font-weight:500}
+.nav a{color:#fff;white-space:nowrap;transition:opacity .2s}
+.nav a:hover{opacity:.65}
+.hdr__meta{grid-column:3;justify-self:end;display:flex;align-items:center;gap:16px;font-size:21px}
+/* Hidden only until the language script has swapped the markup, so the page never
+   flashes Russian before settling on Kazakh. Removed in a finally, and <noscript>
+   covers the case where scripts never run at all. */
+.i18n-boot body{visibility:hidden}
+.lang{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid var(--brd)}
+.lang button{
+  border:0;background:none;cursor:pointer;color:var(--txt-mut);
+  font:700 11px/1 Manrope,sans-serif;letter-spacing:.06em;padding:7px 9px;border-radius:7px;
+  transition:background .2s,color .2s;
+}
+.lang button:hover{color:#fff}
+.lang button[aria-current="true"]{background:#fff;color:var(--ink)}
+.drawer .lang{justify-content:center;margin-top:20px}
+.ic{display:grid;place-items:center;width:34px;height:34px;color:#fff;transition:opacity .2s}
+.ic:hover{opacity:.65}
+.ic svg{width:21px;height:21px}
+/* .ic is shared; the header, footer and floating button each set their own size. */
+.hdr__meta .ic{width:51px;height:51px}
+.hdr__meta .ic svg{width:32px;height:32px}
+.hdr__tel{display:inline-flex;align-items:center;gap:9px;font-weight:700;white-space:nowrap;color:#fff;transition:opacity .2s}
+.hdr__tel:hover{opacity:.65}
+.hdr__tel svg{width:24px;height:24px;flex:0 0 24px}
+.burger{
+  width:42px;height:42px;border-radius:11px;display:none;place-items:center;
+  background:var(--glass-2);border:1px solid var(--brd);cursor:pointer;backdrop-filter:blur(14px);
+}
+.burger span{display:block;width:16px;height:1.5px;background:#fff;margin:3px 0;transition:.25s}
+.burger.is-open span:nth-child(1){transform:translateY(4.5px) rotate(45deg)}
+.burger.is-open span:nth-child(2){opacity:0}
+.burger.is-open span:nth-child(3){transform:translateY(-4.5px) rotate(-45deg)}
+
+.drawer{
+  position:fixed;inset:var(--hdr-h) 0 auto;z-index:55;
+  background:rgba(8,20,29,.95);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--brd-soft);
+  padding:20px var(--pad) 28px;
+  display:grid;gap:4px;
+  /* Shifted by its own height plus the header offset, so the closed drawer clears
+     the top of the screen whatever its content height turns out to be. */
+  transform:translateY(calc(-100% - var(--hdr-h)));
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.drawer.is-open{transform:none}
+.drawer a{padding:13px 0;font-size:17px;font-weight:600;border-bottom:1px solid var(--brd-soft)}
+.drawer .btn{margin-top:18px}
+
+/* ---------- floating contact + back to top ---------- */
+/* Mobile only: on desktop these links stay in the header, so .fab is display:none
+   until the 640px breakpoint turns it on. */
+/* Hidden over the first screen: the hero's centred call to action reaches into
+   this corner on a narrow phone, and a back-to-top arrow is useless at the top. */
+.fab{
+  position:fixed;right:16px;bottom:16px;z-index:70;
+  display:none;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;
+}
+.fab.is-on{opacity:1;visibility:visible}
+.fab__btn{
+  width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:var(--glass-2);border:1px solid var(--brd);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;
+  box-shadow:0 10px 26px rgba(0,0,0,.35);transition:background .2s,transform .2s;
+}
+.fab__btn svg{width:24px;height:24px}
+.fab__btn:active{transform:scale(.94)}
+/* Messengers sit above the chat button; visibility keeps them out of the tab
+   order while collapsed. */
+.fab__menu{
+  display:grid;gap:10px;justify-items:center;
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .25s,transform .25s,visibility .25s;
+}
+.fab__menu.is-open{opacity:1;visibility:visible;transform:none}
+.fab .ic{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--glass-2);border:1px solid var(--brd);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+.fab .ic svg{width:22px;height:22px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(40px,6vw,80px)}
+.hero{background:linear-gradient(180deg,#8fb3c7,#1e4257 62%,#0e2231)}
+/* Two stacked copies of the clip. The outgoing one stays fully opaque underneath
+   while the incoming one fades in on top — fading both at once would let the
+   backdrop show through by ~25% at the midpoint and that reads as a flicker. */
+.hero__scene{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.hero__scene.is-under{opacity:1;z-index:0;transition:none}
+.hero__scene.is-over{opacity:1;z-index:1;transition:opacity .9s linear}
+.hero__veil{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,20,29,.5) 0%,rgba(8,20,29,0) 26%,rgba(8,20,29,.12) 52%,rgba(10,26,37,.62) 74%,rgba(14,34,49,.97) 100%);
+}
+/* No max-width here: the headline sits against the left page gutter and the
+   call-to-action block against the right one, as wide as the screen allows. */
+.hero__in{position:relative;z-index:2;width:100%;max-width:none}
+.hero__grid{display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(24px,5vw,80px)}
+.hero__grid>div:last-child{flex:0 0 auto;width:min(430px,34vw)}
+.hero h1{
+  font-size:clamp(32px,4.4vw,64px);line-height:1.04;letter-spacing:-.035em;font-weight:300;
+  text-shadow:0 2px 40px rgba(0,0,0,.4);
+}
+.hero h1 strong{display:block;font-weight:700}
+.hero__lead{font-size:clamp(14px,1.1vw,16px);line-height:1.6;color:var(--frost);max-width:46ch;margin-bottom:24px}
+
+/* ---------- about ---------- */
+.about{padding:clamp(44px,6vw,86px) 0 0}
+.about__grid{display:grid;grid-template-columns:200px 1fr;gap:clamp(20px,4vw,56px);align-items:start}
+.statement{
+  font-size:clamp(24px,3.4vw,48px);line-height:1.18;letter-spacing:-.025em;font-weight:300;
+}
+.statement b{font-weight:700}
+.statement i{font-style:normal;color:var(--haze)}
+
+/* ---------- points ---------- */
+/* One flush band straight under the hero: no top padding, no gap between the
+   tiles and no corner radius, so the strip starts exactly where the video ends. */
+.points{padding:0 0 clamp(28px,4vw,52px)}
+.points-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
+.point{
+  padding:28px 24px;min-height:140px;border-radius:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+}
+.point__num{font-size:clamp(44px,5vw,64px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.point p{font-size:clamp(16px,1.5vw,19px);line-height:1.55;color:var(--txt-mut);margin-top:14px}
+.point p b{color:#fff;font-weight:700}
+
+/* ---------- section shell ---------- */
+.sec{padding:clamp(44px,5.6vw,80px) 0}
+.sec__head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.sec__head h2{font-size:clamp(28px,4vw,54px);line-height:1.05;letter-spacing:-.03em;font-weight:300}
+.sec__head h2 b{font-weight:700}
+.sec__head p{font-size:14px;line-height:1.6;color:var(--txt-mut);max-width:42ch}
+
+/* ---------- services ---------- */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.svc{
+  padding:0;overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .3s,background .3s,border-color .3s;
+}
+.svc:hover{transform:translateY(-4px);background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.09));border-color:rgba(255,255,255,.34)}
+.svc__ph{position:relative;aspect-ratio:16/10;overflow:hidden}
+.svc__ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.16,.8,.3,1)}
+.svc:hover .svc__ph img{transform:scale(1.06)}
+/* The renders sit on the same deep navy as the page, so fading their lower edge
+   into the card body hides the seam instead of cutting it with a hard line. */
+.svc__ph::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(14,34,49,0) 55%,rgba(14,34,49,.8) 100%);
+}
+.svc__b{padding:22px 26px 24px;display:flex;flex-direction:column;gap:14px;flex:1}
+.svc__i{font-size:12px;color:var(--haze);font-weight:600;letter-spacing:.08em}
+.svc h3{font-size:19px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.svc p{font-size:13.5px;line-height:1.6;color:var(--txt-mut);flex:1}
+.svc__go{
+  display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ice);
+}
+.svc__go svg{width:13px;height:13px;transition:transform .2s}
+.svc:hover .svc__go svg{transform:translate(3px,-3px)}
+.svc-note{
+  margin-top:18px;padding:18px 22px;border-radius:12px;font-size:13.5px;line-height:1.6;
+  color:var(--txt-mut);
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+  border:1px solid var(--brd-soft);
+  backdrop-filter:blur(22px) saturate(1.6);
+  -webkit-backdrop-filter:blur(22px) saturate(1.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* ---------- doctors ---------- */
+/* Eight doctors: four across fills two rows exactly, with no gap at the end. */
+.doc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.doc{padding:0;overflow:hidden;transition:transform .3s,border-color .3s}
+.doc:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.34)}
+/* Square frame: the studio portraits are 4:3, so a 1:1 box trims the grey sides
+   and brings the face up to a readable size without any per-photo tuning. */
+.doc__ph{
+  aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,rgba(169,202,219,.26),rgba(43,95,121,.16));
+  border-bottom:1px solid var(--brd-soft);
+}
+.doc__ph img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+/* Softens the hard edge where the light studio backdrop meets the dark card body. */
+.doc__ph::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:38%;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(14,34,49,0),rgba(14,34,49,.55));
+}
+.doc__b{padding:20px 22px 22px}
+.doc h3{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.doc__role{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--haze);font-weight:600;margin-top:6px}
+.doc p{font-size:13px;line-height:1.55;color:var(--txt-mut);margin-top:10px}
+
+/* ---------- gallery ---------- */
+/* 13 tiles: the first spans 2x2, which fills a 4-column grid exactly (4+12=16
+   cells) instead of leaving a hole in the last row. */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gal__item{
+  display:block;position:relative;padding:0;cursor:zoom-in;
+  aspect-ratio:1;overflow:hidden;border-radius:var(--radius);
+  border:1px solid var(--brd);background:rgba(255,255,255,.06);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 34px rgba(5,16,24,.25);
+  transition:border-color .3s,transform .3s;
+}
+.gal__item:first-child{grid-column:span 2;grid-row:span 2}
+.gal__item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.16,.8,.3,1)}
+.gal__item::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,20,29,0) 55%,rgba(8,20,29,.45));
+  opacity:.75;transition:opacity .3s;
+}
+.gal__item:hover{border-color:rgba(255,255,255,.4);transform:translateY(-3px)}
+.gal__item:hover img{transform:scale(1.07)}
+.gal__item:hover::after{opacity:.3}
+.gal__item:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+.lb{
+  width:min(1200px,94vw);max-width:none;max-height:92vh;padding:0;border:0;background:none;
+  overflow:visible;
+}
+.lb::backdrop{background:rgba(5,14,21,.9);backdrop-filter:blur(8px)}
+.lb img{
+  display:block;width:100%;max-height:92vh;object-fit:contain;
+  border-radius:var(--radius);border:1px solid var(--brd);background:#0b1b26;
+}
+.lb__btn{
+  position:absolute;z-index:2;display:grid;place-items:center;
+  width:48px;height:48px;border-radius:50%;cursor:pointer;color:#fff;
+  background:rgba(12,30,43,.72);border:1px solid var(--brd);backdrop-filter:blur(14px);
+  font:300 26px/1 Manrope,sans-serif;transition:background .2s,color .2s;
+}
+.lb__btn:hover{background:#fff;color:var(--ink)}
+.lb__close{top:-14px;right:-14px;font-size:20px}
+.lb__prev{left:-16px;top:50%;transform:translateY(-50%)}
+.lb__next{right:-16px;top:50%;transform:translateY(-50%)}
+
+/* ---------- reviews ---------- */
+.rev-rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.rev-rail::-webkit-scrollbar{display:none}
+.rev{flex:0 0 min(380px,82vw);scroll-snap-align:start;padding:26px;display:flex;flex-direction:column;gap:14px}
+.rev__stars{color:#fff;font-size:14px;letter-spacing:2px}
+.rev p{font-size:14px;line-height:1.62;color:var(--frost);flex:1}
+.rev__who{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--brd-soft)}
+.rev__av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--deep);background:linear-gradient(150deg,#fff,#bcd6e3);flex:0 0 38px}
+.rev__who b{display:block;font-size:14px;font-weight:700}
+.rev__who small{display:block;font-size:12px;color:var(--txt-mut);margin-top:1px}
+.rail-ctl{display:flex;gap:8px}
+.rail-ctl button{
+  width:44px;height:44px;border-radius:11px;background:var(--glass-2);border:1px solid var(--brd);
+  cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(14px);transition:background .2s
+}
+.rail-ctl button:hover{background:#fff;color:var(--ink)}
+
+/* ---------- cta form ---------- */
+.cta{padding:clamp(40px,5.2vw,74px) 0}
+.cta__box{padding:clamp(28px,4vw,56px);border-radius:var(--radius-lg)}
+.cta__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);align-items:center}
+.cta h2{font-size:clamp(26px,3.6vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:300}
+.cta h2 b{font-weight:700}
+.cta__sub{font-size:14px;line-height:1.6;color:var(--txt-mut);margin-top:16px;max-width:40ch}
+.form{display:grid;gap:12px}
+.field{position:relative}
+.field label{position:absolute;left:16px;top:11px;font-size:11px;color:var(--txt-mut);letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
+.field textarea{resize:vertical;min-height:120px;display:block}
+.field input,.field select,.field textarea{
+  width:100%;padding:28px 16px 12px;border-radius:12px;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+  border:1px solid var(--brd);
+  backdrop-filter:blur(18px) saturate(1.5);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5);
+  outline:none;transition:border-color .2s,background .2s;
+  appearance:none;
+}
+.field select{cursor:pointer}
+.field select option{background:var(--deep);color:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#fff;background:rgba(255,255,255,.12)}
+.field.is-bad input,.field.is-bad select,.field.is-bad textarea{border-color:#ff8d7a}
+.field__err{display:none;font-size:11.5px;color:#ffb3a5;margin-top:5px;padding-left:4px}
+.field.is-bad .field__err{display:block}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5;color:var(--txt-mut);cursor:pointer}
+.consent input{width:16px;height:16px;flex:0 0 16px;margin-top:1px;accent-color:#fff;cursor:pointer}
+.form .btn{margin-top:4px}
+.form__ok{display:none;padding:18px;border-radius:12px;background:rgba(169,202,219,.16);border:1px solid var(--brd);font-size:14px;text-align:center}
+.form.is-sent .form__ok{display:block}
+.form.is-sent .field,.form.is-sent .consent,.form.is-sent .btn,.form.is-sent .rate{display:none}
+
+/* ---------- review form ---------- */
+.rev-form{margin-top:16px;padding:clamp(22px,3vw,36px);border-radius:var(--radius-lg)}
+.rev-form__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.rev-form__head h3{font-size:clamp(20px,2.2vw,28px);font-weight:300;letter-spacing:-.02em}
+.rev-form__head h3 b{font-weight:700}
+.rev-form .form{grid-template-columns:1fr 1fr;gap:12px}
+.rev-form .rate,.rev-form .field--wide,.rev-form .consent,.rev-form .btn,.rev-form .form__ok{grid-column:1/-1}
+.rate{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.rate__cap{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt-mut)}
+/* row-reverse so a plain `~` selector can light the stars to the left of the
+   hovered one — no JS needed for the rating. */
+.stars{display:flex;flex-direction:row-reverse;justify-content:flex-end}
+.stars input{position:absolute;width:1px;height:1px;opacity:0}
+.stars label{
+  cursor:pointer;font-size:26px;line-height:1;padding:0 2px;
+  color:rgba(255,255,255,.26);transition:color .15s;
+}
+.stars input:checked ~ label,
+.stars label:hover,.stars label:hover ~ label{color:#fff}
+.stars input:focus-visible ~ label{outline:2px solid #fff;outline-offset:3px}
+.rate.is-bad .stars label{color:#ff8d7a}
+
+/* ---------- contacts ---------- */
+.cont-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.branch{padding:28px}
+.branch__tag{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--haze);font-weight:600}
+.branch h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:8px}
+.branch dl{margin:18px 0 0;display:grid;gap:11px;font-size:14px}
+.branch dl div{display:flex;gap:12px}
+.branch dt{flex:0 0 96px;color:var(--txt-mut);font-size:13px}
+.branch dd{margin:0;font-weight:600}
+.branch dd a:hover{color:var(--ice)}
+.branch__links{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;
+  font-size:12.5px;font-weight:600;border:1px solid var(--brd);
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.05));
+  backdrop-filter:blur(18px) saturate(1.5);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5);
+  transition:background .2s
+}
+.chip:hover{background:#fff;color:var(--ink)}
+.chip svg{width:14px;height:14px}
+.map-wrap{margin-top:14px;padding:10px;overflow:hidden}
+#map{height:clamp(300px,42vw,460px);border-radius:12px;background:#dfe5e8;z-index:0}
+/* Numbered teardrops instead of Leaflet's default icon, which would otherwise
+   pull marker images off the CDN. */
+.pin{position:relative}
+.pin svg{width:34px;height:44px;fill:#1f8a5f;filter:drop-shadow(0 4px 9px rgba(0,0,0,.4))}
+.pin b{
+  position:absolute;left:0;top:10px;width:34px;text-align:center;
+  font:800 13px/1 Manrope,sans-serif;color:#fff;letter-spacing:.02em;
+}
+.leaflet-container{background:#dfe5e8;font-family:Manrope,sans-serif}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{
+  background:rgba(14,34,49,.96);color:var(--txt);
+  border:1px solid var(--brd);box-shadow:0 14px 34px rgba(0,0,0,.4);
+}
+.leaflet-popup-content{margin:12px 16px;font-size:13.5px;line-height:1.5}
+.leaflet-popup-content b{display:block;margin-bottom:4px;font-size:14px}
+.leaflet-popup-content a{color:var(--ice)}
+.leaflet-popup-close-button{color:var(--txt-mut)!important}
+
+/* ---------- footer ---------- */
+.ftr{border-top:1px solid var(--brd-soft);padding:clamp(40px,6vw,72px) 0 32px;background:rgba(0,0,0,.2)}
+.ftr__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:clamp(24px,4vw,56px)}
+.ftr .logo img{height:120px}
+/* Each clamp starts at the old size, so the phone footer is untouched and only
+   the desktop one grows. */
+.ftr__about{font-size:clamp(13.5px,1.4vw,18px);line-height:1.6;color:var(--txt-mut);margin-top:16px;max-width:34ch}
+/* Negative margin cancels the icon's own padding so it lines up with the text above. */
+/* The heading row and the card grid are both children of .wrap, so the paragraph's
+   right edge already sits on the last card's — right-aligning makes it show. Named
+   per section: in #reviews the paragraph is not the last item in the row, so the
+   same alignment there would land nowhere near the edge. */
+#services .sec__head p,#doctors .sec__head p{text-align:right}
+.ftr__soc{display:flex;gap:10px;margin:20px 0 0 -8px}
+.ftr__soc .ic{width:44px;height:44px}
+.ftr__soc .ic svg{width:28px;height:28px}
+.ftr h4{font-size:clamp(12px,1.15vw,15px);letter-spacing:.11em;text-transform:uppercase;color:var(--haze);font-weight:600;margin-bottom:14px}
+.ftr li+li{margin-top:9px}
+.ftr li a,.ftr li{font-size:clamp(14px,1.4vw,18px);color:var(--txt-mut)}
+.ftr li a:hover{color:#fff}
+.ftr__bot{
+  margin-top:clamp(32px,5vw,56px);padding-top:22px;border-top:1px solid var(--brd-soft);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:clamp(12.5px,1.15vw,15px);color:var(--txt-mut)
+}
+
+/* ---------- reveal ---------- */
+.rv{
+  opacity:0;transform:translate(var(--dx,0px),var(--dy,26px));
+  transition:opacity .85s cubic-bezier(.16,.8,.3,1),transform .85s cubic-bezier(.16,.8,.3,1);
+  will-change:opacity,transform;
+}
+.rv.in{opacity:1;transform:none}
+
+/* Direction per grid position: outer columns fly in from their own edge, the middle
+   one rises. Declared in CSS so nothing depends on measuring layout at load time. */
+.sec__head>:first-child,.about__grid>:first-child{--dx:-60px;--dy:0px}
+.sec__head>:last-child,.about__grid>:last-child{--dx:60px;--dy:0px;transition-delay:.12s}
+#revRail{--dx:84px;--dy:0px}
+
+.cont-grid>:nth-child(odd){--dx:-72px;--dy:0px}
+.cont-grid>:nth-child(even){--dx:72px;--dy:0px;transition-delay:.09s}
+
+.points-grid>:nth-child(1){--dx:-72px;--dy:0px}
+.points-grid>:nth-child(2){--dx:72px;--dy:0px;transition-delay:.09s}
+
+.svc-grid>*,.doc-grid>*{--dy:32px;transition-delay:.09s}
+.svc-grid>:nth-child(3n+1){--dx:-72px;--dy:0px;transition-delay:0s}
+.svc-grid>:nth-child(3n){--dx:72px;--dy:0px;transition-delay:.18s}
+.doc-grid>:nth-child(4n+1){--dx:-72px;--dy:0px;transition-delay:0s}
+.doc-grid>:nth-child(4n+3){transition-delay:.18s}
+.doc-grid>:nth-child(4n){--dx:72px;--dy:0px;transition-delay:.27s}
+
+
+/* ---------- hero entrance ---------- */
+@keyframes aIn{from{opacity:0;transform:scale(1.07)}to{opacity:1;transform:none}}
+@keyframes aUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.hero__grid>div:first-child{animation:aUp 1s cubic-bezier(.16,.8,.3,1) .18s both}
+.hero__grid>div:last-child{animation:aUp 1s cubic-bezier(.16,.8,.3,1) .42s both}
+.doc.in .doc__ph img{animation:aIn 1s cubic-bezier(.16,.8,.3,1) .22s both}
+
+/* ---------- responsive ---------- */
+/* At the header's 21px type, six Kazakh items plus the logo, phone and switcher
+   need ~1510px. Below that the menu folds into the burger — which carries the
+   same links — rather than squeezing the logo out of its grid column. */
+@media (max-width:1560px){
+  .nav{display:none}
+  .burger{display:grid}
+}
+@media (max-width:1100px){
+  .svc-grid,.doc-grid{grid-template-columns:repeat(2,1fr)}
+  .ftr__grid{grid-template-columns:1fr 1fr}
+  .svc-grid>:nth-child(odd),.doc-grid>:nth-child(odd){--dx:-64px;--dy:0px;transition-delay:0s}
+  .svc-grid>:nth-child(even),.doc-grid>:nth-child(even){--dx:64px;--dy:0px;transition-delay:.09s}
+  .drawer{text-align:center}
+  /* Two columns: the feature tile goes full width so the remaining 12 fill
+     six whole rows and no gap is left at the end. */
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .gal__item:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/10}
+}
+@media (max-width:860px){
+  :root{--hdr-h:112px}
+  .logo img{height:88px}
+  .hero__grid{flex-direction:column;align-items:stretch;gap:28px}
+  .hero__grid>div:last-child{width:auto}
+  .about__grid{grid-template-columns:1fr}
+  .cta__grid{grid-template-columns:1fr}
+  .cont-grid,.points-grid{grid-template-columns:1fr}
+  /* :nth-child(n) only to match the specificity of the direction rules above */
+  .cont-grid>:nth-child(n),.points-grid>:nth-child(n),
+  .sec__head>:nth-child(n),.about__grid>:nth-child(n){--dx:0px;--dy:28px;transition-delay:0s}
+  .hero__veil{background:linear-gradient(180deg,rgba(8,20,29,.5) 0%,rgba(8,20,29,0) 20%,rgba(10,26,37,.55) 42%,rgba(12,30,43,.9) 58%,rgba(14,34,49,.99) 78%)}
+
+  /* One column reads better centred. The headings stack instead of relying on
+     flex-wrap, so each one centres on its own line. */
+  .hero__grid,.about__grid{text-align:center}
+  .hero__lead{margin-inline:auto}
+  .sec__head{flex-direction:column;align-items:center;text-align:center}
+  .sec__head p{margin-inline:auto}
+  /* Repeats the id selectors so it outweighs the right-aligned captions above. */
+  #services .sec__head p,#doctors .sec__head p{text-align:center}
+}
+@media (max-width:640px){
+  .hdr__tel{display:none}
+  .svc-grid,.doc-grid{grid-template-columns:1fr}
+  .svc-grid>:nth-child(n),.doc-grid>:nth-child(n){--dx:0px;--dy:28px;transition-delay:0s}
+  .gal__item:first-child{grid-column:span 2;aspect-ratio:4/3}
+  .lb__prev{left:6px}
+  .lb__next{right:6px}
+  .lb__close{top:6px;right:6px}
+
+  /* Messengers move out of the header into the floating button. */
+  .hdr__meta .ic{display:none}
+  /* Kept in the header rather than hidden behind the burger — a visitor who needs
+     another language should not have to go looking for it. */
+  .hdr .lang button{padding:6px 7px;font-size:10px}
+  .fab{display:flex}
+
+  /* Hero: one centred call to action, pulled down to the bottom of the screen. */
+  .hero{min-height:94svh;padding-bottom:24px}
+  /* Both buttons side by side need ~353px and there are 313px, so the phone
+     keeps the single centred call to action. */
+  .cta-pair .btn--ghost{display:none}
+  .cta-pair{display:flex;justify-content:center}
+  .hero__grid{gap:16px}
+
+  /* One narrow column reads better centred than left-aligned. */
+  .ftr__grid{grid-template-columns:1fr;text-align:center}
+  /* The logo link is shrink-to-fit, so it centres as an inline box, not by margins. */
+  .ftr .logo{display:inline-block}
+  .ftr__about{margin-inline:auto}
+  .ftr__soc{justify-content:center;margin-left:0}
+  .ftr__bot{justify-content:center;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="logo" href="#top" aria-label="Dental Mangystau — на главную">
+      <img src="LOGO.svg" alt="Dental Mangystau" width="104" height="136">
+    </a>
+    <nav class="nav">
+      <a href="#about">О клинике</a>
+      <a href="#services">Услуги</a>
+      <a href="#doctors">Врачи</a>
+      <a href="#gallery">Галерея</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <div class="hdr__meta">
+      <div class="lang" role="group" aria-label="Тіл / Язык / Language">
+        <button type="button" data-lang="kk">ҚАЗ</button>
+        <button type="button" data-lang="ru">РУС</button>
+        <button type="button" data-lang="en">ENG</button>
+      </div>
+      <a class="ic" href="https://wa.me/77007572767" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.4-5.3-4.6-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.5-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.4 1.8 1 .9 1.8 1.1 2 1.2.2.1.4.1.5-.1l.8-.9c.2-.2.3-.2.6-.1l2 1c.3.1.5.2.5.4.1.1.1.6-.1 1.3Z"/></svg>
+      </a>
+      <a class="ic" href="https://instagram.com/dental_mangystau" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.4"/>
+          <circle cx="12" cy="12" r="4.1"/>
+          <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a class="hdr__tel" href="tel:+77007572767">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+        +7 700 757 27 67
+      </a>
+      <button class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="drawer" id="drawer">
+  <a href="#about">О клинике</a>
+  <a href="#services">Услуги</a>
+  <a href="#doctors">Врачи</a>
+  <a href="#gallery">Галерея</a>
+  <a href="#reviews">Отзывы</a>
+  <a href="#contacts">Контакты</a>
+  <a href="tel:+77007572767">+7 700 757 27 67</a>
+  <a class="btn" href="#cta">Записаться на приём</a>
+  <div class="lang" role="group" aria-label="Тіл / Язык / Language">
+    <button type="button" data-lang="kk">ҚАЗ</button>
+    <button type="button" data-lang="ru">РУС</button>
+    <button type="button" data-lang="en">ENG</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <!-- Same file twice: the browser fetches it once and serves the second from cache.
+       `muted` drops the soundtrack and is also what lets the browser autoplay at all. -->
+  <video class="hero__scene" src="NEW%20HERO.mp4" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
+  <video class="hero__scene" src="NEW%20HERO.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+  <div class="hero__veil"></div>
+
+  <div class="wrap hero__in">
+    <div class="hero__grid">
+      <div>
+        <p class="eyebrow" style="margin-bottom:18px">Цифровая стоматология · Актау</p>
+        <h1>Эстетика улыбки.<strong>Уверенность в себе.</strong></h1>
+      </div>
+      <div>
+        <p class="hero__lead">Имплантация, виниры, протезирование и лечение под микроскопом. От одного зуба до полной челюсти.</p>
+        <div class="cta-pair">
+          <a class="btn" href="#cta">Записаться на приём</a>
+          <a class="btn btn--ghost" href="#services">Услуги</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POINTS ============ -->
+<!-- No .wrap here on purpose: these two tiles run edge to edge, unlike every
+     other section, which sits inside the 1320px content column. -->
+<section class="points">
+  <div class="points-grid rv">
+    <div class="point glass">
+      <span class="point__num" data-count="12">12</span>
+      <p><b>Направлений</b> — от профгигиены до полной имплантации и цифрового протезирования.</p>
+    </div>
+    <div class="point glass">
+      <span class="point__num" data-count="8">8</span>
+      <p><b>Специалистов</b> — хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about__grid rv">
+      <p class="eyebrow">О клинике</p>
+      <p class="statement">Dental Mangystau — <b>цифровая стоматология в Актау</b>, <i>где каждое лечение планируется по КТ и выполняется под микроскопом, а результат виден ещё до начала работы.</i></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <h2>К вашим<br><b>услугам</b></h2>
+      <p>Полный цикл в одной клинике: диагностика, хирургия, ортопедия и ортодонтия — без направлений в другие центры.</p>
+    </div>
+    <div class="svc-grid rv">
+      <!-- alt="" on purpose: each render repeats the <h3> next to it, so naming it
+           again would just make a screen reader say the service twice. -->
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-implantation.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 01 )</span><h3>Имплантация</h3><p>Восстановление от одного зуба до полной челюсти. Планирование по КТ, установка по хирургическому шаблону.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-digital.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 02 )</span><h3>Цифровая стоматология</h3><p>Цифровые слепки вместо слепочной массы, моделирование улыбки и фрезеровка конструкций.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-microscope.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 03 )</span><h3>Лечение под микроскопом</h3><p>Прецизионное лечение каналов и реставрация — для взрослых и детей.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-veneers.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 04 )</span><h3>Виниры</h3><p>Эстетика передних зубов: форма, цвет и симметрия — с предварительным цифровым макетом.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-surgery.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 05 )</span><h3>Хирургия и удаление</h3><p>Удаление зубов, включая зубы мудрости и ретинированные — аккуратно и под контролем снимка.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-orthopedics.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 06 )</span><h3>Ортопедия</h3><p>Коронки, мосты и съёмные конструкции на собственных зубах и имплантах.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-orthodontics.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 07 )</span><h3>Ортодонтия</h3><p>Брекет-системы, элайнеры и ретенционные капы — исправление прикуса в любом возрасте.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-periodontology.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 08 )</span><h3>Пародонтология</h3><p>Лечение дёсен и профессиональная гигиена — основа для любой дальнейшей работы.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-kids.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 09 )</span><h3>Детская стоматология</h3><p>Первый визит без страха, лечение и профилактика у детского стоматолога-терапевта.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-sedation.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 10 )</span><h3>Лечение во сне и седация</h3><p>Для взрослых пациентов с выраженным страхом или большим объёмом работы за один визит.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-ct.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 11 )</span><h3>КТ зубов</h3><p>Компьютерная томография на месте — без поездок в другой диагностический центр.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+      <article class="svc glass"><div class="svc__ph"><img src="services/svc-xray.jpg" alt="" width="800" height="500" loading="lazy" decoding="async"></div><div class="svc__b"><span class="svc__i">( 12 )</span><h3>Прицельный снимок</h3><p>Быстрая рентген-диагностика одного зуба прямо на приёме.</p><a class="svc__go" href="#cta">Записаться <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div></article>
+    </div>
+    <!-- ponytail: no price table — the clinic publishes no prices on 2GIS or Instagram. Drop in a <table> here once they send the real прайс. -->
+    <p class="svc-note rv">Стоимость врач называет после осмотра и КТ-снимка — она зависит от объёма работы и выбранной конструкции. Консультация и план лечения обсуждаются на первом приёме.</p>
+  </div>
+</section>
+
+<!-- ============ DOCTORS ============ -->
+<section class="sec" id="doctors">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <h2>Наши<br><b>врачи</b></h2>
+      <p>Команда из восьми специалистов: хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.</p>
+    </div>
+    <div class="doc-grid rv">
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-batyrbek.jpg" alt="Батырбек Жанаев — стоматолог-хирург" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Батырбек Жанаев</h3><p class="doc__role">Стоматолог-хирург</p><p>Удаление зубов мудрости, хирургическая подготовка к имплантации.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-dosmukhammed.jpg" alt="Досмухаммед Кайратович — стоматолог-ортопед, хирург" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Досмухаммед Кайратович</h3><p class="doc__role">Стоматолог-ортопед, хирург</p><p>Имплантация и протезирование, цифровое планирование конструкций.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-zhenis.jpg" alt="Жеңіс Аманкосұлы — стоматолог-терапевт" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Жеңіс Аманкосұлы</h3><p class="doc__role">Стоматолог-терапевт</p><p>Лечение кариеса и каналов под микроскопом, эстетическая реставрация.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-tolegen.jpg" alt="Толеген Мухамбетов — детский стоматолог-терапевт" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Толеген Мухамбетов</h3><p class="doc__role">Детский стоматолог-терапевт</p><p>Приём детей с первого визита — спокойно, бережно и без травмы.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-aidana.jpg" alt="Айдана Молдабекова — стоматолог-терапевт" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Айдана Молдабекова</h3><p class="doc__role">Стоматолог-терапевт</p><p>Лечение и реставрация с подробным объяснением каждого этапа.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-arailym.jpg" alt="Арайлым — врач-ортодонт" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Арайлым</h3><p class="doc__role">Врач-ортодонт</p><p>Элайнеры, капы и сопровождение ортодонтического лечения.</p></div></article>
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-borak.jpg" alt="Борак Акжолович — стоматолог" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Борак Акжолович</h3><p class="doc__role">Стоматолог</p><p>Приём в филиале в 13-м микрорайоне, терапия и неотложная помощь.</p></div></article>
+      <!-- ponytail: Кайрат's specialty isn't stated in any public source — verify with the clinic before publishing. -->
+      <article class="doc glass"><div class="doc__ph"><img src="photos/dr-kairat.jpg" alt="Кайрат — стоматолог" width="800" height="800" loading="lazy" decoding="async"></div><div class="doc__b"><h3>Кайрат</h3><p class="doc__role">Стоматолог</p><p>Ведёт приём в клинике Dental Mangystau.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="sec" id="gallery" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <h2>Галерея<br><b>работ</b></h2>
+      <p>Клинические фотографии наших работ: лечение под микроскопом и результаты полной реабилитации.</p>
+    </div>
+    <div class="gal rv">
+      <button class="gal__item" type="button" data-full="gallery/01.jpg"><img src="gallery/01-thumb.jpg" alt="Клинический случай 1" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/02.jpg"><img src="gallery/02-thumb.jpg" alt="Клинический случай 2" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/03.jpg"><img src="gallery/03-thumb.jpg" alt="Клинический случай 3" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/04.jpg"><img src="gallery/04-thumb.jpg" alt="Клинический случай 4" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/05.jpg"><img src="gallery/05-thumb.jpg" alt="Клинический случай 5" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/06.jpg"><img src="gallery/06-thumb.jpg" alt="Клинический случай 6" width="700" height="523" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/07.jpg"><img src="gallery/07-thumb.jpg" alt="Клинический случай 7" width="700" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/08.jpg"><img src="gallery/08-thumb.jpg" alt="Клинический случай 8" width="700" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/09.jpg"><img src="gallery/09-thumb.jpg" alt="Клинический случай 9" width="700" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/10.jpg"><img src="gallery/10-thumb.jpg" alt="Клинический случай 10" width="698" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/11.jpg"><img src="gallery/11-thumb.jpg" alt="Клинический случай 11" width="699" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/12.jpg"><img src="gallery/12-thumb.jpg" alt="Клинический случай 12" width="698" height="700" loading="lazy" decoding="async"></button>
+      <button class="gal__item" type="button" data-full="gallery/13.jpg"><img src="gallery/13-thumb.jpg" alt="Клинический случай 13" width="700" height="700" loading="lazy" decoding="async"></button>
+    </div>
+  </div>
+</section>
+
+<dialog class="lb" id="lightbox">
+  <button class="lb__btn lb__close" type="button" aria-label="Закрыть">✕</button>
+  <button class="lb__btn lb__prev" type="button" aria-label="Предыдущее фото">‹</button>
+  <img alt="">
+  <button class="lb__btn lb__next" type="button" aria-label="Следующее фото">›</button>
+</dialog>
+
+<!-- ============ REVIEWS ============ -->
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <div>
+        <h2>Отзывы о<br><b>нашей работе</b></h2>
+        <p style="margin-top:16px">178 подтверждённых отзывов в 2ГИС и средняя оценка 4.9 из 5.</p>
+      </div>
+      <div class="rail-ctl">
+        <button id="revPrev" aria-label="Предыдущий отзыв"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3 5 8l5 5"/></svg></button>
+        <button id="revNext" aria-label="Следующий отзыв"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m6 3 5 5-5 5"/></svg></button>
+      </div>
+    </div>
+    <div class="rev-rail rv" id="revRail">
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Доктор Жанаев Батырбек — настоящий профессионал своего дела. Очень переживала перед удалением зуба, но всё прошло быстро, аккуратно и безболезненно. Доктор очень спокойный и внимательный, всё подробно объяснил».</p><div class="rev__who"><span class="rev__av">АБ</span><div><b>Аяулым Бердімұрат</b><small>2ГИС · отзыв подтверждён</small></div></div></article>
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Жеңіс Амаңқосұлы — мастер своего дела. Пролечила все зубы, всё прошло очень мягко, без боли, легко. Всё доступно объясняет, даёт полезные рекомендации и делает работу ювелирно».</p><div class="rev__who"><span class="rev__av">ЖК</span><div><b>Жанна К.</b><small>2ГИС · 2 посещения</small></div></div></article>
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Девушки на ресепшене очень приветливые, внимательные и заботливые. Отдельное спасибо врачу Досмухаммеду за профессионализм и качественную работу. Спасибо всему коллективу за хорошее отношение к пациентам!»</p><div class="rev__who"><span class="rev__av">АМ</span><div><b>Aitugan Maratkyzy</b><small>2ГИС · отзыв подтверждён</small></div></div></article>
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Хочу поблагодарить Алию Салкеновну за отличную работу. Результатом после брекетов очень довольна, всё получилось именно так, как я хотела».</p><div class="rev__who"><span class="rev__av">ЖД</span><div><b>Жупар Дабысова</b><small>2ГИС · 8 посещений</small></div></div></article>
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Хочу выразить огромную благодарность стоматологу Борак Акжоловичу за профессионализм, внимательное отношение и бережную работу. А также всем девочкам в филиале в 13-м мкр».</p><div class="rev__who"><span class="rev__av">СТ</span><div><b>Самал Танатарова</b><small>2ГИС · 3 посещения</small></div></div></article>
+      <article class="rev glass"><div class="rev__stars">★★★★★</div><p>«Очень чисто и уютно. Ребята хоть молодые, но очень аккуратные. Доктор Досмухаммед всё тщательно объяснил. Спасибо. Советую».</p><div class="rev__who"><span class="rev__av">АЕ</span><div><b>Айсезим Ерланкызы</b><small>2ГИС · 2 посещения</small></div></div></article>
+    </div>
+
+    <div class="rev-form glass rv">
+      <div class="rev-form__head">
+        <h3>Оставить <b>отзыв</b></h3>
+        <span class="count">( публикуется после модерации )</span>
+      </div>
+      <form class="form" novalidate>
+        <div class="rate">
+          <span class="rate__cap">Ваша оценка *</span>
+          <div class="stars">
+            <input type="radio" id="st5" name="rating" value="5" required><label for="st5" title="5 из 5">★</label>
+            <input type="radio" id="st4" name="rating" value="4"><label for="st4" title="4 из 5">★</label>
+            <input type="radio" id="st3" name="rating" value="3"><label for="st3" title="3 из 5">★</label>
+            <input type="radio" id="st2" name="rating" value="2"><label for="st2" title="2 из 5">★</label>
+            <input type="radio" id="st1" name="rating" value="1"><label for="st1" title="1 из 5">★</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="r-name">Ваше имя *</label>
+          <input id="r-name" name="name" type="text" autocomplete="name" required>
+          <span class="field__err">Это поле обязательно для заполнения</span>
+        </div>
+        <div class="field">
+          <label for="r-doc">У какого врача лечились</label>
+          <select id="r-doc" name="doctor">
+            <option>Не указывать</option>
+            <option>Батырбек Жанаев</option>
+            <option>Досмухаммед Кайратович</option>
+            <option>Жеңіс Аманкосұлы</option>
+            <option>Толеген Мухамбетов</option>
+            <option>Айдана Молдабекова</option>
+            <option>Арайлым</option>
+            <option>Борак Акжолович</option>
+            <option>Кайрат</option>
+          </select>
+        </div>
+        <div class="field field--wide">
+          <label for="r-text">Отзыв *</label>
+          <textarea id="r-text" name="text" rows="4" required data-min="20"></textarea>
+          <span class="field__err">Напишите хотя бы пару предложений — так отзыв будет полезнее</span>
+        </div>
+        <label class="consent">
+          <input type="checkbox" required>
+          <span>Согласен(-на) на обработку персональных данных и публикацию отзыва на сайте</span>
+        </label>
+        <button class="btn" type="submit">Отправить отзыв</button>
+        <div class="form__ok" role="status">Спасибо! Отзыв отправлен на модерацию и появится на сайте после проверки.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FORM ============ -->
+<section class="cta" id="cta">
+  <div class="wrap">
+    <div class="cta__box glass rv">
+      <div class="cta__grid">
+        <div>
+          <h2>Остались<br><b>вопросы?</b></h2>
+          <p class="cta__sub">Оставьте имя и номер — администратор перезвонит, уточнит удобное время и подберёт врача под вашу задачу.</p>
+          <div class="branch__links" style="margin-top:26px">
+            <a class="chip" href="https://wa.me/77007572767" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.4-5.3-4.6-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.5-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.4 1.8 1 .9 1.8 1.1 2 1.2.2.1.4.1.5-.1l.8-.9c.2-.2.3-.2.6-.1l2 1c.3.1.5.2.5.4.1.1.1.6-.1 1.3Z"/></svg>
+              WhatsApp
+            </a>
+            <a class="chip" href="tel:+77007572767">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+              +7 700 757 27 67
+            </a>
+          </div>
+        </div>
+
+        <form class="form" id="form" novalidate>
+          <div class="field">
+            <label for="f-name">Ваше имя *</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+            <span class="field__err">Это поле обязательно для заполнения</span>
+          </div>
+          <div class="field">
+            <label for="f-tel">Телефон *</label>
+            <input id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 700 000 00 00" required>
+            <span class="field__err">Укажите номер телефона — не менее 10 цифр</span>
+          </div>
+          <div class="field">
+            <label for="f-svc">Услуга</label>
+            <select id="f-svc" name="service">
+              <option>Консультация</option>
+              <option>Имплантация</option>
+              <option>Виниры и эстетика</option>
+              <option>Лечение под микроскопом</option>
+              <option>Ортодонтия (брекеты, элайнеры)</option>
+              <option>Протезирование и коронки</option>
+              <option>Удаление зуба</option>
+              <option>Детский приём</option>
+              <option>КТ зубов / снимок</option>
+            </select>
+          </div>
+          <label class="consent">
+            <input type="checkbox" id="f-ok" required>
+            <span>Согласен(-на) на обработку персональных данных и ознакомлен(-а) с пользовательским соглашением</span>
+          </label>
+          <button class="btn" type="submit">Отправить</button>
+          <div class="form__ok" role="status">Спасибо! Заявка отправлена — администратор перезвонит в ближайшее время.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACTS ============ -->
+<section class="sec" id="contacts" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <h2>Два филиала<br><b>в Актау</b></h2>
+    </div>
+
+    <div class="cont-grid rv">
+      <article class="branch glass">
+        <span class="branch__tag">Филиал 01 · главный</span>
+        <h3>27-й микрорайон, 67</h3>
+        <dl>
+          <div><dt>Этаж</dt><dd>1 этаж</dd></div>
+          <div><dt>Телефон</dt><dd><a href="tel:+77007572767">+7 700 757 27 67</a></dd></div>
+          <div><dt>Часы</dt><dd>Ежедневно 09:00 — 21:00</dd></div>
+          <div><dt>Рейтинг</dt><dd>4.9 ★ · 307 оценок</dd></div>
+        </dl>
+        <div class="branch__links">
+          <a class="chip" href="https://2gis.kz/aktau/firm/70000001060288138" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+          <a class="chip" href="https://wa.me/77007572767" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </article>
+
+      <article class="branch glass">
+        <span class="branch__tag">Филиал 02</span>
+        <h3>13-й микрорайон, 10</h3>
+        <dl>
+          <div><dt>Телефон</dt><dd><a href="tel:+77007571310">+7 700 757 13 10</a></dd></div>
+          <div><dt>Направления</dt><dd>Терапия, хирургия, неотложная помощь</dd></div>
+          <div><dt>Часы</dt><dd>Ежедневно 09:00 — 21:00</dd></div>
+          <div><dt>Рейтинг</dt><dd>4.9 ★ · 60 оценок</dd></div>
+        </dl>
+        <div class="branch__links">
+          <a class="chip" href="https://2gis.kz/aktau/search/Dental%20Mangystau" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+          <a class="chip" href="https://wa.me/77007571310" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="map-wrap glass rv">
+      <div id="map" role="application" aria-label="Карта с двумя филиалами Dental Mangystau в Актау"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__grid">
+      <div>
+        <a class="logo" href="#top" aria-label="Dental Mangystau — на главную">
+          <img src="LOGO.svg" alt="Dental Mangystau" width="92" height="120">
+        </a>
+        <p class="ftr__about">Цифровая стоматология в Актау. Имплантация, виниры, протезирование и лечение под микроскопом. Два филиала, собственная КТ-диагностика.</p>
+        <div class="ftr__soc">
+          <a class="ic" href="https://wa.me/77007572767" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.4-5.3-4.6-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.5-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.4 1.8 1 .9 1.8 1.1 2 1.2.2.1.4.1.5-.1l.8-.9c.2-.2.3-.2.6-.1l2 1c.3.1.5.2.5.4.1.1.1.6-.1 1.3Z"/></svg>
+          </a>
+          <a class="ic" href="https://instagram.com/dental_mangystau" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.4"/>
+              <circle cx="12" cy="12" r="4.1"/>
+              <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Разделы</h4>
+        <ul>
+          <li><a href="#about">О клинике</a></li>
+          <li><a href="#services">Услуги</a></li>
+          <li><a href="#doctors">Врачи</a></li>
+          <li><a href="#gallery">Галерея</a></li>
+          <li><a href="#reviews">Отзывы</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="tel:+77007572767">+7 700 757 27 67</a></li>
+          <li><a href="tel:+77007571310">+7 700 757 13 10</a></li>
+          <li>27-й микрорайон, 67, Актау</li>
+          <li>13-й микрорайон, 10, Актау</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr__bot">
+      <span>© <span id="yr">2026</span> Dental Mangystau · ТОО «Dental MANGYSTAU», Актау</span>
+      <span>Есть противопоказания — необходима консультация специалиста</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating contact + back to top (mobile only). The arrow is a plain anchor to
+     the hero's existing #top, so it needs no script. -->
+<div class="fab">
+  <div class="fab__menu" id="fabMenu">
+    <a class="ic" href="https://wa.me/77007572767" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.4-5.3-4.6-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.5-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.4 1.8 1 .9 1.8 1.1 2 1.2.2.1.4.1.5-.1l.8-.9c.2-.2.3-.2.6-.1l2 1c.3.1.5.2.5.4.1.1.1.6-.1 1.3Z"/></svg>
+    </a>
+    <a class="ic" href="https://instagram.com/dental_mangystau" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+        <rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.4"/>
+        <circle cx="12" cy="12" r="4.1"/>
+        <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+  </div>
+  <button class="fab__btn" id="fabChat" aria-label="Написать нам" aria-expanded="false" aria-controls="fabMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20.6 11.6a8.1 8.1 0 0 1-8.7 8.1 9.3 9.3 0 0 1-2.3-.3L4.4 21l1.4-4.1a7.9 7.9 0 0 1-1.8-5.3 8.1 8.1 0 0 1 8.6-8.1 8.1 8.1 0 0 1 8 8.1Z"/>
+    </svg>
+  </button>
+  <a class="fab__btn" href="#top" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </a>
+</div>
+
+<script>
+/* Language. Entries are keyed by the Russian already in the markup, so no element
+   needs a translation attribute and the dictionary stays in one place. Russian is
+   the markup itself, hence only kk and en are listed. Placed above the Leaflet tag
+   so a slow CDN cannot hold the page hidden. */
+(() => {
+  'use strict';
+
+  const KK = {
+    // chrome
+    'О клинике':'Клиника туралы', 'Услуги':'Қызметтер', 'Врачи':'Дәрігерлер',
+    'Отзывы':'Пікірлер', 'Контакты':'Байланыс', 'Записаться на приём':'Қабылдауға жазылу',
+    'Меню':'Мәзір', 'Dental Mangystau — на главную':'Dental Mangystau — басты бетке',
+    'Dental Mangystau — цифровая стоматология в Актау':'Dental Mangystau — Ақтаудағы цифрлық стоматология',
+    'Dental Mangystau — цифровая стоматология в Актау. Имплантация, виниры, лечение под микроскопом, КТ-диагностика. Два филиала, рейтинг 4.9 в 2ГИС.':'Dental Mangystau — Ақтаудағы цифрлық стоматология. Имплантация, винирлер, микроскоппен емдеу, КТ-диагностика. Екі филиал, 2GIS-те 4.9 рейтинг.',
+    // hero
+    'Цифровая стоматология · Актау':'Цифрлық стоматология · Ақтау',
+    'Эстетика улыбки.':'Күлкі эстетикасы.', 'Уверенность в себе.':'Өзіңе деген сенім.',
+    'Имплантация, виниры, протезирование и лечение под микроскопом. От одного зуба до полной челюсти.':'Имплантация, винирлер, протездеу және микроскоппен емдеу. Бір тістен толық жақ сүйегіне дейін.',
+    // points
+    'Направлений':'Бағыт',
+    '— от профгигиены до полной имплантации и цифрового протезирования.':'— кәсіби гигиенадан толық имплантация мен цифрлық протездеуге дейін.',
+    'Специалистов':'Маман',
+    '— хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.':'— хирургтер, ортопедтер, ортодонттар, терапевттер және балалар стоматологы.',
+    // about
+    'цифровая стоматология в Актау':'Ақтаудағы цифрлық стоматология',
+    'где каждое лечение планируется по КТ и выполняется под микроскопом, а результат виден ещё до начала работы.':'мұнда әрбір емдеу КТ бойынша жоспарланады және микроскоппен орындалады, ал нәтиже жұмыс басталмай тұрып көрінеді.',
+    // services
+    'К вашим':'Сіздің', 'услугам':'қызметіңізде',
+    'Полный цикл в одной клинике: диагностика, хирургия, ортопедия и ортодонтия — без направлений в другие центры.':'Бір клиникада толық цикл: диагностика, хирургия, ортопедия және ортодонтия — басқа орталықтарға жолдамасыз.',
+    'Записаться':'Жазылу',
+    'Имплантация':'Имплантация',
+    'Восстановление от одного зуба до полной челюсти. Планирование по КТ, установка по хирургическому шаблону.':'Бір тістен толық жақ сүйегіне дейін қалпына келтіру. КТ бойынша жоспарлау, хирургиялық шаблонмен орнату.',
+    'Цифровая стоматология':'Цифрлық стоматология',
+    'Цифровые слепки вместо слепочной массы, моделирование улыбки и фрезеровка конструкций.':'Қалып массасының орнына цифрлық сканер, күлкіні модельдеу және конструкцияларды фрезерлеу.',
+    'Лечение под микроскопом':'Микроскоппен емдеу',
+    'Прецизионное лечение каналов и реставрация — для взрослых и детей.':'Тамырларды дәл емдеу және реставрация — ересектер мен балаларға.',
+    'Виниры':'Винирлер',
+    'Эстетика передних зубов: форма, цвет и симметрия — с предварительным цифровым макетом.':'Алдыңғы тістердің эстетикасы: пішін, түс және симметрия — алдын ала цифрлық макетпен.',
+    'Хирургия и удаление':'Хирургия және тіс жұлу',
+    'Удаление зубов, включая зубы мудрости и ретинированные — аккуратно и под контролем снимка.':'Тіс жұлу, оның ішінде ақыл тістер мен ретинирленген тістер — ұқыпты және түсірілім бақылауымен.',
+    'Ортопедия':'Ортопедия',
+    'Коронки, мосты и съёмные конструкции на собственных зубах и имплантах.':'Қаптамалар, көпірлер және алмалы-салмалы конструкциялар — өз тістерге де, имплантқа да.',
+    'Ортодонтия':'Ортодонтия',
+    'Брекет-системы, элайнеры и ретенционные капы — исправление прикуса в любом возрасте.':'Брекет жүйелері, элайнерлер және ретенциялық капалар — кез келген жаста тіс қатарын түзету.',
+    'Пародонтология':'Пародонтология',
+    'Лечение дёсен и профессиональная гигиена — основа для любой дальнейшей работы.':'Қызыл иекті емдеу және кәсіби гигиена — кез келген келесі жұмыстың негізі.',
+    'Детская стоматология':'Балалар стоматологиясы',
+    'Первый визит без страха, лечение и профилактика у детского стоматолога-терапевта.':'Қорқынышсыз алғашқы келу, балалар стоматолог-терапевтінде емдеу және алдын алу.',
+    'Лечение во сне и седация':'Ұйқыдағы емдеу және седация',
+    'Для взрослых пациентов с выраженным страхом или большим объёмом работы за один визит.':'Қатты қорқатын немесе бір келуде үлкен көлемде жұмыс қажет ересек пациенттерге.',
+    'КТ зубов':'Тістің КТ-сы',
+    'Компьютерная томография на месте — без поездок в другой диагностический центр.':'Компьютерлік томография орнында — басқа диагностикалық орталыққа барудың қажеті жоқ.',
+    'Прицельный снимок':'Нысаналы түсірілім',
+    'Быстрая рентген-диагностика одного зуба прямо на приёме.':'Бір тістің жылдам рентген-диагностикасы қабылдау кезінде.',
+    'Стоимость врач называет после осмотра и КТ-снимка — она зависит от объёма работы и выбранной конструкции. Консультация и план лечения обсуждаются на первом приёме.':'Бағаны дәрігер тексеруден және КТ түсірілімінен кейін айтады — ол жұмыс көлемі мен таңдалған конструкцияға байланысты. Кеңес және емдеу жоспары алғашқы қабылдауда талқыланады.',
+    // doctors
+    'Наши':'Біздің', 'врачи':'дәрігерлер',
+    'Команда из восьми специалистов: хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.':'Сегіз маманнан тұратын команда: хирургтер, ортопедтер, ортодонттар, терапевттер және балалар стоматологы.',
+    'Стоматолог-хирург':'Стоматолог-хирург', 'Стоматолог-ортопед, хирург':'Стоматолог-ортопед, хирург',
+    'Стоматолог-терапевт':'Стоматолог-терапевт', 'Детский стоматолог-терапевт':'Балалар стоматолог-терапевті',
+    'Врач-ортодонт':'Дәрігер-ортодонт', 'Стоматолог':'Стоматолог',
+    'Удаление зубов мудрости, хирургическая подготовка к имплантации.':'Ақыл тістерді жұлу, имплантацияға хирургиялық дайындық.',
+    'Имплантация и протезирование, цифровое планирование конструкций.':'Имплантация және протездеу, конструкцияларды цифрлық жоспарлау.',
+    'Лечение кариеса и каналов под микроскопом, эстетическая реставрация.':'Кариес пен тамырларды микроскоппен емдеу, эстетикалық реставрация.',
+    'Приём детей с первого визита — спокойно, бережно и без травмы.':'Балаларды алғашқы келуден бастап қабылдау — сабырлы, ұқыпты және жарақатсыз.',
+    'Лечение и реставрация с подробным объяснением каждого этапа.':'Әр кезеңді егжей-тегжейлі түсіндіре отырып емдеу және реставрация.',
+    'Элайнеры, капы и сопровождение ортодонтического лечения.':'Элайнерлер, капалар және ортодонтиялық емдеуді сүйемелдеу.',
+    'Приём в филиале в 13-м микрорайоне, терапия и неотложная помощь.':'13-шағын ауданындағы филиалда қабылдау, терапия және шұғыл көмек.',
+    'Ведёт приём в клинике Dental Mangystau.':'Dental Mangystau клиникасында қабылдайды.',
+    'Батырбек Жанаев — стоматолог-хирург':'Батырбек Жанаев — стоматолог-хирург',
+    'Досмухаммед Кайратович — стоматолог-ортопед, хирург':'Досмұхаммед Қайратұлы — стоматолог-ортопед, хирург',
+    'Жеңіс Аманкосұлы — стоматолог-терапевт':'Жеңіс Аманқосұлы — стоматолог-терапевт',
+    'Толеген Мухамбетов — детский стоматолог-терапевт':'Төлеген Мұхамбетов — балалар стоматолог-терапевті',
+    'Айдана Молдабекова — стоматолог-терапевт':'Айдана Молдабекова — стоматолог-терапевт',
+    'Арайлым — врач-ортодонт':'Арайлым — дәрігер-ортодонт',
+    'Борак Акжолович — стоматолог':'Борақ Ақжолұлы — стоматолог',
+    'Кайрат — стоматолог':'Қайрат — стоматолог',
+    // gallery
+    'Галерея':'Галерея', 'работ':'жұмыстар',
+    'Клинические фотографии наших работ: лечение под микроскопом и результаты полной реабилитации.':'Жұмыстарымыздың клиникалық фотолары: микроскоппен емдеу және толық оңалтудың нәтижелері.',
+    'Закрыть':'Жабу', 'Предыдущее фото':'Алдыңғы сурет', 'Следующее фото':'Келесі сурет',
+    'Клинический случай 1':'Клиникалық жағдай 1', 'Клинический случай 2':'Клиникалық жағдай 2',
+    'Клинический случай 3':'Клиникалық жағдай 3', 'Клинический случай 4':'Клиникалық жағдай 4',
+    'Клинический случай 5':'Клиникалық жағдай 5', 'Клинический случай 6':'Клиникалық жағдай 6',
+    'Клинический случай 7':'Клиникалық жағдай 7', 'Клинический случай 8':'Клиникалық жағдай 8',
+    'Клинический случай 9':'Клиникалық жағдай 9', 'Клинический случай 10':'Клиникалық жағдай 10',
+    'Клинический случай 11':'Клиникалық жағдай 11', 'Клинический случай 12':'Клиникалық жағдай 12',
+    'Клинический случай 13':'Клиникалық жағдай 13',
+    // reviews
+    'Отзывы о':'Пікірлер', 'нашей работе':'біздің жұмысымыз туралы',
+    '178 подтверждённых отзывов в 2ГИС и средняя оценка 4.9 из 5.':'2GIS-те 178 расталған пікір және 5-тен 4.9 орташа баға.',
+    // The review quotes themselves are deliberately absent here and from EN: they
+    // are verbatim patient wording from 2GIS and stay in the original language.
+    // An untranslated key falls through to the Russian, so nothing else is needed.
+    '2ГИС · отзыв подтверждён':'2GIS · пікір расталған', '2ГИС · 2 посещения':'2GIS · 2 рет келген',
+    '2ГИС · 8 посещений':'2GIS · 8 рет келген', '2ГИС · 3 посещения':'2GIS · 3 рет келген',
+    'Предыдущий отзыв':'Алдыңғы пікір', 'Следующий отзыв':'Келесі пікір',
+    // review form
+    'Оставить':'Пікір', 'отзыв':'қалдыру', '( публикуется после модерации )':'( модерациядан кейін жарияланады )',
+    'Ваша оценка *':'Бағаңыз *', 'Ваше имя *':'Атыңыз *',
+    'Это поле обязательно для заполнения':'Бұл өрісті толтыру міндетті',
+    'У какого врача лечились':'Қай дәрігерде емделдіңіз', 'Не указывать':'Көрсетпеу', 'Отзыв *':'Пікір *',
+    'Напишите хотя бы пару предложений — так отзыв будет полезнее':'Кемінде бірнеше сөйлем жазыңыз — сонда пікір пайдалырақ болады',
+    'Согласен(-на) на обработку персональных данных и публикацию отзыва на сайте':'Дербес деректерді өңдеуге және пікірдің сайтта жариялануына келісемін',
+    'Отправить отзыв':'Пікірді жіберу',
+    'Спасибо! Отзыв отправлен на модерацию и появится на сайте после проверки.':'Рахмет! Пікір модерацияға жіберілді және тексерілгеннен кейін сайтта көрінеді.',
+    '5 из 5':'5-тен 5', '4 из 5':'5-тен 4', '3 из 5':'5-тен 3', '2 из 5':'5-тен 2', '1 из 5':'5-тен 1',
+    // callback form
+    'Остались':'Сұрақтар', 'вопросы?':'қалды ма?',
+    'Оставьте имя и номер — администратор перезвонит, уточнит удобное время и подберёт врача под вашу задачу.':'Атыңыз бен нөміріңізді қалдырыңыз — әкімші қайта қоңырау шалып, ыңғайлы уақытты нақтылайды және сізге дәрігер таңдайды.',
+    'Телефон *':'Телефон *', 'Укажите номер телефона — не менее 10 цифр':'Телефон нөмірін көрсетіңіз — кемінде 10 цифр',
+    'Услуга':'Қызмет', 'Консультация':'Кеңес алу', 'Виниры и эстетика':'Винирлер және эстетика',
+    'Ортодонтия (брекеты, элайнеры)':'Ортодонтия (брекеттер, элайнерлер)',
+    'Протезирование и коронки':'Протездеу және қаптамалар', 'Удаление зуба':'Тіс жұлу',
+    'Детский приём':'Балаларды қабылдау', 'КТ зубов / снимок':'Тістің КТ-сы / түсірілім',
+    'Согласен(-на) на обработку персональных данных и ознакомлен(-а) с пользовательским соглашением':'Дербес деректерді өңдеуге келісемін және пайдаланушы келісімімен таныстым',
+    'Отправить':'Жіберу',
+    'Спасибо! Заявка отправлена — администратор перезвонит в ближайшее время.':'Рахмет! Өтінім жіберілді — әкімші жақын арада қоңырау шалады.',
+    'Написать нам':'Бізге жазу', 'Наверх':'Жоғарыға',
+    // contacts
+    'Два филиала':'Екі филиал', 'в Актау':'Ақтауда',
+    'Филиал 01 · главный':'01 филиал · басты', 'Филиал 02':'02 филиал',
+    '27-й микрорайон, 67':'27-шағын аудан, 67', '13-й микрорайон, 10':'13-шағын аудан, 10',
+    'Этаж':'Қабат', '1 этаж':'1-қабат', 'Телефон':'Телефон', 'Часы':'Жұмыс уақыты',
+    'Ежедневно 09:00 — 21:00':'Күн сайын 09:00 — 21:00', 'Рейтинг':'Рейтинг',
+    '4.9 ★ · 307 оценок':'4.9 ★ · 307 баға', '4.9 ★ · 60 оценок':'4.9 ★ · 60 баға',
+    'Открыть в 2ГИС':'2GIS-те ашу', 'Направления':'Бағыттар',
+    'Терапия, хирургия, неотложная помощь':'Терапия, хирургия, шұғыл көмек',
+    'Карта с двумя филиалами Dental Mangystau в Актау':'Ақтаудағы Dental Mangystau екі филиалы бар карта',
+    // footer
+    'Цифровая стоматология в Актау. Имплантация, виниры, протезирование и лечение под микроскопом. Два филиала, собственная КТ-диагностика.':'Ақтаудағы цифрлық стоматология. Имплантация, винирлер, протездеу және микроскоппен емдеу. Екі филиал, меншікті КТ-диагностика.',
+    'Разделы':'Бөлімдер',
+    '27-й микрорайон, 67, Актау':'27-шағын аудан, 67, Ақтау', '13-й микрорайон, 10, Актау':'13-шағын аудан, 10, Ақтау',
+    'Dental Mangystau · ТОО «Dental MANGYSTAU», Актау':'Dental Mangystau · «Dental MANGYSTAU» ЖШС, Ақтау',
+    'Есть противопоказания — необходима консультация специалиста':'Қарсы көрсетілімдері бар — маманмен кеңесу қажет'
+  };
+
+  const EN = {
+    'О клинике':'About', 'Услуги':'Services', 'Врачи':'Doctors', 'Отзывы':'Reviews',
+    'Контакты':'Contacts', 'Записаться на приём':'Book an appointment',
+    'Меню':'Menu', 'Dental Mangystau — на главную':'Dental Mangystau — home',
+    'Dental Mangystau — цифровая стоматология в Актау':'Dental Mangystau — digital dentistry in Aktau',
+    'Dental Mangystau — цифровая стоматология в Актау. Имплантация, виниры, лечение под микроскопом, КТ-диагностика. Два филиала, рейтинг 4.9 в 2ГИС.':'Dental Mangystau — digital dentistry in Aktau. Implants, veneers, microscope treatment, CT diagnostics. Two branches, rated 4.9 on 2GIS.',
+    'Цифровая стоматология · Актау':'Digital dentistry · Aktau',
+    'Эстетика улыбки.':'The art of a smile.', 'Уверенность в себе.':'Confidence in yourself.',
+    'Имплантация, виниры, протезирование и лечение под микроскопом. От одного зуба до полной челюсти.':'Implants, veneers, prosthetics and treatment under a microscope. From a single tooth to a full arch.',
+    'Направлений':'Treatment areas',
+    '— от профгигиены до полной имплантации и цифрового протезирования.':'— from professional hygiene to full-arch implants and digital prosthetics.',
+    'Специалистов':'Specialists',
+    '— хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.':'— surgeons, prosthodontists, orthodontists, general dentists and a paediatric dentist.',
+    'цифровая стоматология в Актау':'a digital dental clinic in Aktau',
+    'где каждое лечение планируется по КТ и выполняется под микроскопом, а результат виден ещё до начала работы.':'where every treatment is planned on a CT scan and carried out under a microscope, and you see the result before the work begins.',
+    'К вашим':'At your', 'услугам':'service',
+    'Полный цикл в одной клинике: диагностика, хирургия, ортопедия и ортодонтия — без направлений в другие центры.':'The full cycle in one clinic: diagnostics, surgery, prosthetics and orthodontics — no referrals elsewhere.',
+    'Записаться':'Book',
+    'Имплантация':'Dental implants',
+    'Восстановление от одного зуба до полной челюсти. Планирование по КТ, установка по хирургическому шаблону.':'Restoring anything from a single tooth to a full arch. Planned on CT, placed with a surgical guide.',
+    'Цифровая стоматология':'Digital dentistry',
+    'Цифровые слепки вместо слепочной массы, моделирование улыбки и фрезеровка конструкций.':'Digital scans instead of impression material, smile design and in-house milling.',
+    'Лечение под микроскопом':'Microscope treatment',
+    'Прецизионное лечение каналов и реставрация — для взрослых и детей.':'Precise root canal work and restorations — for adults and children.',
+    'Виниры':'Veneers',
+    'Эстетика передних зубов: форма, цвет и симметрия — с предварительным цифровым макетом.':'Front-tooth aesthetics: shape, colour and symmetry — with a digital mock-up first.',
+    'Хирургия и удаление':'Surgery and extractions',
+    'Удаление зубов, включая зубы мудрости и ретинированные — аккуратно и под контролем снимка.':'Extractions, including wisdom and impacted teeth — carefully and guided by imaging.',
+    'Ортопедия':'Prosthetics',
+    'Коронки, мосты и съёмные конструкции на собственных зубах и имплантах.':'Crowns, bridges and removable work on natural teeth and implants.',
+    'Ортодонтия':'Orthodontics',
+    'Брекет-системы, элайнеры и ретенционные капы — исправление прикуса в любом возрасте.':'Braces, aligners and retainers — correcting the bite at any age.',
+    'Пародонтология':'Periodontics',
+    'Лечение дёсен и профессиональная гигиена — основа для любой дальнейшей работы.':'Gum treatment and professional hygiene — the basis for everything that follows.',
+    'Детская стоматология':'Paediatric dentistry',
+    'Первый визит без страха, лечение и профилактика у детского стоматолога-терапевта.':'A first visit without fear, treatment and prevention with a paediatric dentist.',
+    'Лечение во сне и седация':'Treatment under sedation',
+    'Для взрослых пациентов с выраженным страхом или большим объёмом работы за один визит.':'For adult patients with strong anxiety, or a lot of work in a single visit.',
+    'КТ зубов':'Dental CT',
+    'Компьютерная томография на месте — без поездок в другой диагностический центр.':'Computed tomography on site — no trip to another diagnostic centre.',
+    'Прицельный снимок':'Single-tooth X-ray',
+    'Быстрая рентген-диагностика одного зуба прямо на приёме.':'Quick X-ray diagnostics of one tooth right at the appointment.',
+    'Стоимость врач называет после осмотра и КТ-снимка — она зависит от объёма работы и выбранной конструкции. Консультация и план лечения обсуждаются на первом приёме.':'The dentist quotes the price after an examination and a CT scan — it depends on the amount of work and the option you choose. The consultation and treatment plan are discussed at the first visit.',
+    'Наши':'Our', 'врачи':'doctors',
+    'Команда из восьми специалистов: хирурги, ортопеды, ортодонты, терапевты и детский стоматолог.':'A team of eight: surgeons, prosthodontists, orthodontists, general dentists and a paediatric dentist.',
+    'Стоматолог-хирург':'Oral surgeon', 'Стоматолог-ортопед, хирург':'Prosthodontist, surgeon',
+    'Стоматолог-терапевт':'General dentist', 'Детский стоматолог-терапевт':'Paediatric dentist',
+    'Врач-ортодонт':'Orthodontist', 'Стоматолог':'Dentist',
+    'Удаление зубов мудрости, хирургическая подготовка к имплантации.':'Wisdom tooth removal, surgical preparation for implants.',
+    'Имплантация и протезирование, цифровое планирование конструкций.':'Implants and prosthetics, digital planning of restorations.',
+    'Лечение кариеса и каналов под микроскопом, эстетическая реставрация.':'Caries and root canals under a microscope, aesthetic restorations.',
+    'Приём детей с первого визита — спокойно, бережно и без травмы.':'Children from their very first visit — calm, gentle and without trauma.',
+    'Лечение и реставрация с подробным объяснением каждого этапа.':'Treatment and restoration with every step explained.',
+    'Элайнеры, капы и сопровождение ортодонтического лечения.':'Aligners, retainers and orthodontic follow-up.',
+    'Приём в филиале в 13-м микрорайоне, терапия и неотложная помощь.':'Sees patients at the 13th microdistrict branch — general and emergency care.',
+    'Ведёт приём в клинике Dental Mangystau.':'Sees patients at the Dental Mangystau clinic.',
+    'Батырбек Жанаев — стоматолог-хирург':'Batyrbek Zhanaev — oral surgeon',
+    'Досмухаммед Кайратович — стоматолог-ортопед, хирург':'Dosmukhammed Kairatovich — prosthodontist, surgeon',
+    'Жеңіс Аманкосұлы — стоматолог-терапевт':'Zhenis Amankosuly — general dentist',
+    'Толеген Мухамбетов — детский стоматолог-терапевт':'Tolegen Mukhambetov — paediatric dentist',
+    'Айдана Молдабекова — стоматолог-терапевт':'Aidana Moldabekova — general dentist',
+    'Арайлым — врач-ортодонт':'Arailym — orthodontist',
+    'Борак Акжолович — стоматолог':'Borak Akzholovich — dentist',
+    'Кайрат — стоматолог':'Kairat — dentist',
+    'Галерея':'Gallery', 'работ':'of our work',
+    'Клинические фотографии наших работ: лечение под микроскопом и результаты полной реабилитации.':'Clinical photographs of our work: treatment under a microscope and full-mouth rehabilitation results.',
+    'Закрыть':'Close', 'Предыдущее фото':'Previous photo', 'Следующее фото':'Next photo',
+    'Клинический случай 1':'Clinical case 1', 'Клинический случай 2':'Clinical case 2',
+    'Клинический случай 3':'Clinical case 3', 'Клинический случай 4':'Clinical case 4',
+    'Клинический случай 5':'Clinical case 5', 'Клинический случай 6':'Clinical case 6',
+    'Клинический случай 7':'Clinical case 7', 'Клинический случай 8':'Clinical case 8',
+    'Клинический случай 9':'Clinical case 9', 'Клинический случай 10':'Clinical case 10',
+    'Клинический случай 11':'Clinical case 11', 'Клинический случай 12':'Clinical case 12',
+    'Клинический случай 13':'Clinical case 13',
+    'Отзывы о':'What patients', 'нашей работе':'say about us',
+    '178 подтверждённых отзывов в 2ГИС и средняя оценка 4.9 из 5.':'178 verified reviews on 2GIS and an average rating of 4.9 out of 5.',
+    '2ГИС · отзыв подтверждён':'2GIS · verified review', '2ГИС · 2 посещения':'2GIS · 2 visits',
+    '2ГИС · 8 посещений':'2GIS · 8 visits', '2ГИС · 3 посещения':'2GIS · 3 visits',
+    'Предыдущий отзыв':'Previous review', 'Следующий отзыв':'Next review',
+    'Оставить':'Leave a', 'отзыв':'review', '( публикуется после модерации )':'( published after moderation )',
+    'Ваша оценка *':'Your rating *', 'Ваше имя *':'Your name *',
+    'Это поле обязательно для заполнения':'This field is required',
+    'У какого врача лечились':'Which doctor treated you', 'Не указывать':'Prefer not to say', 'Отзыв *':'Review *',
+    'Напишите хотя бы пару предложений — так отзыв будет полезнее':'Write at least a couple of sentences — it makes the review more useful',
+    'Согласен(-на) на обработку персональных данных и публикацию отзыва на сайте':'I consent to my personal data being processed and the review published on this site',
+    'Отправить отзыв':'Submit review',
+    'Спасибо! Отзыв отправлен на модерацию и появится на сайте после проверки.':'Thank you! Your review has been sent for moderation and will appear once checked.',
+    '5 из 5':'5 out of 5', '4 из 5':'4 out of 5', '3 из 5':'3 out of 5', '2 из 5':'2 out of 5', '1 из 5':'1 out of 5',
+    'Остались':'Any questions', 'вопросы?':'left?',
+    'Оставьте имя и номер — администратор перезвонит, уточнит удобное время и подберёт врача под вашу задачу.':'Leave your name and number — the clinic will call back, agree a time and match you with the right dentist.',
+    'Телефон *':'Phone *', 'Укажите номер телефона — не менее 10 цифр':'Enter a phone number — at least 10 digits',
+    'Услуга':'Service', 'Консультация':'Consultation', 'Виниры и эстетика':'Veneers and aesthetics',
+    'Ортодонтия (брекеты, элайнеры)':'Orthodontics (braces, aligners)',
+    'Протезирование и коронки':'Prosthetics and crowns', 'Удаление зуба':'Tooth extraction',
+    'Детский приём':'Children’s appointment', 'КТ зубов / снимок':'Dental CT / X-ray',
+    'Согласен(-на) на обработку персональных данных и ознакомлен(-а) с пользовательским соглашением':'I consent to my personal data being processed and have read the terms of use',
+    'Отправить':'Send',
+    'Спасибо! Заявка отправлена — администратор перезвонит в ближайшее время.':'Thank you! Your request has been sent — we will call you back shortly.',
+    'Написать нам':'Message us', 'Наверх':'Back to top',
+    'Два филиала':'Two branches', 'в Актау':'in Aktau',
+    'Филиал 01 · главный':'Branch 01 · main', 'Филиал 02':'Branch 02',
+    '27-й микрорайон, 67':'27th microdistrict, 67', '13-й микрорайон, 10':'13th microdistrict, 10',
+    'Этаж':'Floor', '1 этаж':'1st floor', 'Телефон':'Phone', 'Часы':'Hours',
+    'Ежедневно 09:00 — 21:00':'Daily 09:00 — 21:00', 'Рейтинг':'Rating',
+    '4.9 ★ · 307 оценок':'4.9 ★ · 307 ratings', '4.9 ★ · 60 оценок':'4.9 ★ · 60 ratings',
+    'Открыть в 2ГИС':'Open in 2GIS', 'Направления':'Care',
+    'Терапия, хирургия, неотложная помощь':'General, surgery, emergency care',
+    'Карта с двумя филиалами Dental Mangystau в Актау':'Map showing both Dental Mangystau branches in Aktau',
+    'Цифровая стоматология в Актау. Имплантация, виниры, протезирование и лечение под микроскопом. Два филиала, собственная КТ-диагностика.':'Digital dentistry in Aktau. Implants, veneers, prosthetics and microscope treatment. Two branches, our own CT diagnostics.',
+    'Разделы':'Sections',
+    '27-й микрорайон, 67, Актау':'27th microdistrict, 67, Aktau', '13-й микрорайон, 10, Актау':'13th microdistrict, 10, Aktau',
+    'Dental Mangystau · ТОО «Dental MANGYSTAU», Актау':'Dental Mangystau · Dental MANGYSTAU LLP, Aktau',
+    'Есть противопоказания — необходима консультация специалиста':'Contraindications may apply — consult a specialist'
+  };
+
+  const DICTS = {kk: KK, en: EN, ru: null};
+  const SKIP = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT']);
+  const ATTR_NAMES = ['placeholder', 'aria-label', 'title', 'alt'];
+
+  // Captured once, with the Russian kept alongside each node so any language can
+  // be reached from any other.
+  const nodes = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n; (n = walker.nextNode());) {
+    const key = n.nodeValue.trim();
+    if (key && !SKIP.has(n.parentElement.tagName)) nodes.push([n, key, n.nodeValue]);
+  }
+  const attrs = [];
+  for (const el of document.querySelectorAll('[placeholder],[aria-label],[title],[alt]'))
+    for (const a of ATTR_NAMES) {
+      const v = el.getAttribute(a);
+      if (v) attrs.push([el, a, v]);
+    }
+  const meta = document.querySelector('meta[name="description"]');
+  const titleRu = document.title;
+  const descRu = meta ? meta.content : '';
+
+  let lang = 'kk';
+  const t = s => (DICTS[lang] && DICTS[lang][s]) || s;
+  const onLang = [];   // things rebuilt rather than swapped in place, e.g. map popups
+
+  function setLang(next) {
+    lang = DICTS[next] !== undefined ? next : 'kk';
+    // Replacing inside the raw value keeps the original leading/trailing whitespace.
+    for (const [node, key, raw] of nodes) node.nodeValue = raw.replace(key, () => t(key));
+    for (const [el, a, raw] of attrs) el.setAttribute(a, t(raw));
+    document.title = t(titleRu);
+    if (meta) meta.content = t(descRu);
+    document.documentElement.lang = lang;
+    for (const b of document.querySelectorAll('[data-lang]'))
+      b.setAttribute('aria-current', b.dataset.lang === lang ? 'true' : 'false');
+    try { localStorage.setItem('lang', lang); } catch (e) { /* private mode */ }
+    for (const fn of onLang) fn();
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-lang]');
+    if (b) setLang(b.dataset.lang);
+  });
+
+  let saved = null;
+  try { saved = localStorage.getItem('lang'); } catch (e) { /* private mode */ }
+  try {
+    setLang(saved || 'kk');
+  } finally {
+    document.documentElement.classList.remove('i18n-boot');
+  }
+
+  window.I18N = {t, onLang};
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  // Both branches on one map. Coordinates read off their 2GIS cards.
+  if (window.L) {
+    const branches = [
+      {n: '01', title: 'Филиал 01 · главный', addr: '27-й микрорайон, 67', tel: '+7 700 757 27 67', at: [43.664197, 51.163383]},
+      {n: '02', title: 'Филиал 02', addr: '13-й микрорайон, 10', tel: '+7 700 757 13 10', at: [43.663189, 51.145717]}
+    ];
+    // Popups are built in JS, so the language script cannot swap them in place —
+    // they are re-rendered instead whenever the language changes.
+    const t = window.I18N ? window.I18N.t : (s => s);
+    const popup = b => '<b>' + t(b.title) + '</b>' + t(b.addr) +
+      '<br><a href="tel:' + b.tel.replace(/\s/g, '') + '">' + b.tel + '</a>';
+    const markers = [];
+    // scrollWheelZoom off so scrolling the page past the map doesn't get swallowed.
+    const map = L.map('map', {scrollWheelZoom: false});
+    // Esri's street basemap: no API key, and unlike OpenStreetMap's volunteer
+    // tiles it is meant to be embedded. Labels are baked in on this one.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a>'
+    }).addTo(map);
+
+    for (const b of branches) {
+      const marker = L.marker(b.at, {
+        title: t(b.addr),
+        icon: L.divIcon({
+          className: 'pin',
+          html: '<svg viewBox="0 0 34 44" aria-hidden="true"><path d="M17 0C7.6 0 0 7.6 0 17c0 12 17 27 17 27s17-15 17-27C34 7.6 26.4 0 17 0Z"/></svg><b>' + b.n + '</b>',
+          iconSize: [34, 44],
+          iconAnchor: [17, 44],   // the tip, not the middle, sits on the address
+          popupAnchor: [0, -40]
+        })
+      })
+        .addTo(map)
+        .bindPopup(popup(b));
+      markers.push(marker);
+    }
+    if (window.I18N) window.I18N.onLang.push(() => {
+      markers.forEach((m, i) => {
+        m.setPopupContent(popup(branches[i]));
+        const el = m.getElement();
+        if (el) el.title = t(branches[i].addr);
+      });
+    });
+
+    // maxZoom caps how far it closes in: the branches are only ~1.4 km apart and
+    // without it the map lands on two courtyards with no city around them.
+    map.fitBounds(branches.map(b => b.at), {padding: [70, 70], maxZoom: 14});
+  }
+
+  // Seamless hero loop: the back copy starts and fades in while the front one is
+  // still playing its last .9s, so the cut from last frame to first never shows.
+  // Reduced motion gets a single play instead of a loop.
+  const FADE = 0.9;
+  const layers = [...document.querySelectorAll('.hero__scene')];
+  layers[0].classList.add('is-over');
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let front = 0;
+    const step = () => {
+      const a = layers[front], b = layers[1 - front];
+      if (a.duration && a.currentTime >= a.duration - FADE && b.paused) {
+        a.classList.replace('is-over', 'is-under');
+        b.classList.remove('is-under');
+        void b.offsetWidth; // commit opacity 0 first, or the browser skips the fade
+        b.currentTime = 0;
+        b.play();
+        b.classList.add('is-over');
+        front = 1 - front;
+      }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  // Gallery lightbox on a native <dialog>: Esc and the backdrop are handled by the
+  // browser, so only opening and stepping between photos is left to do here.
+  const lb = document.getElementById('lightbox');
+  if (lb) {
+    const tiles = [...document.querySelectorAll('.gal__item')];
+    const lbImg = lb.querySelector('img');
+    let at = 0;
+    const show = i => {
+      at = (i + tiles.length) % tiles.length;
+      const thumb = tiles[at].querySelector('img');
+      lbImg.src = tiles[at].dataset.full;
+      lbImg.alt = thumb.alt;
+    };
+    tiles.forEach((tile, i) => tile.addEventListener('click', () => { show(i); lb.showModal(); }));
+    lb.querySelector('.lb__close').addEventListener('click', () => lb.close());
+    lb.querySelector('.lb__prev').addEventListener('click', () => show(at - 1));
+    lb.querySelector('.lb__next').addEventListener('click', () => show(at + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+    lb.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') show(at - 1);
+      if (e.key === 'ArrowRight') show(at + 1);
+    });
+  }
+
+  // header shadow
+  const hdr = document.getElementById('hdr');
+  const fab = document.querySelector('.fab');
+  const onScroll = () => {
+    hdr.classList.toggle('is-stuck', scrollY > 24);
+    fab.classList.toggle('is-on', scrollY > innerHeight * 0.7);
+  };
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // mobile drawer
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  const closeDrawer = () => {
+    burger.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    burger.setAttribute('aria-expanded','false');
+  };
+  burger.addEventListener('click', () => {
+    const open = !drawer.classList.contains('is-open');
+    burger.classList.toggle('is-open', open);
+    drawer.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+  // floating contact — same open/close shape as the drawer above
+  const fabChat = document.getElementById('fabChat');
+  const fabMenu = document.getElementById('fabMenu');
+  const setFab = open => {
+    fabMenu.classList.toggle('is-open', open);
+    fabChat.setAttribute('aria-expanded', String(open));
+  };
+  fabChat.addEventListener('click', () => setFab(!fabMenu.classList.contains('is-open')));
+  // The messengers open in a new tab, so collapse on the way out.
+  fabMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setFab(false)));
+
+  // scroll reveal + counters
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('[data-count]').forEach(tick);
+      io.unobserve(e.target);
+    }
+  }, {threshold:.15, rootMargin:'0px 0px -8% 0px'});
+  // Reveal each card on its own, not the whole grid at once; direction and stagger
+  // come from CSS, which is why nothing here measures the layout.
+  document.querySelectorAll('.sec__head,.about__grid,.points-grid,.svc-grid,.doc-grid,.cont-grid').forEach(grid => {
+    grid.classList.remove('rv');
+    for (const card of grid.children) card.classList.add('rv');
+  });
+
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  function tick(el){
+    const target = parseFloat(el.dataset.count);
+    const dec = parseInt(el.dataset.dec || '0', 10);
+    const svg = el.querySelector('svg');
+    const t0 = performance.now(), dur = 1100;
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(dec);
+      if (svg) el.append(svg);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  // reviews rail
+  const rail = document.getElementById('revRail');
+  const page = () => rail.querySelector('.rev').offsetWidth + 14;
+  document.getElementById('revPrev').onclick = () => rail.scrollBy({left:-page(), behavior:'smooth'});
+  document.getElementById('revNext').onclick = () => rail.scrollBy({left: page(), behavior:'smooth'});
+
+  // One handler for both the callback form and the review form: every [required]
+  // control is checked by its own type, so neither form needs its own code.
+  const isFilled = (el, form) =>
+    el.type === 'checkbox' ? el.checked :
+    el.type === 'radio'    ? !!form.querySelector('input[name="' + el.name + '"]:checked') :
+    el.type === 'tel'      ? (el.value.match(/\d/g) || []).length >= 10 :
+    el.value.trim().length >= (+el.dataset.min || 2);
+
+  for (const form of document.querySelectorAll('.form')) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let firstBad = null;
+      for (const el of form.querySelectorAll('[required]')) {
+        const ok = isFilled(el, form);
+        (el.closest('.field') || el.closest('.rate'))?.classList.toggle('is-bad', !ok);
+        if (!ok && !firstBad) firstBad = el;
+      }
+      if (firstBad) { firstBad.focus(); return; }
+
+      // ponytail: no backend — swap this for a fetch() POST once there is an endpoint.
+      form.classList.add('is-sent');
+    });
+
+    form.addEventListener('input', e => {
+      (e.target.closest('.field') || e.target.closest('.rate'))?.classList.remove('is-bad');
+    });
+  }
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>

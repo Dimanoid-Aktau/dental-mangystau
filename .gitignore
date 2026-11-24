@@ -1,0 +1,17 @@
+# Source masters, ~67 MB, none of them referenced by index.html. They are kept out
+# because git history is permanent: adding them later is one commit, removing them
+# afterwards means rewriting history. Drop the lines below to include them.
+/Галерея/
+/НАШИ ВРАЧИ/
+/Услуги BG/
+/Osnova fona.jpg
+/Vector_white_background_design_2fec76a5_2K.jpg
+/HERO.mp4
+/60af5d1537d1f0b7345a21796d3c1b14.jpg
+/60af5d1537d1f0b7345a21796d3c1b14.png
+/b3c4f9fefb34a9447c48b8189ec8874b.jpg
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
