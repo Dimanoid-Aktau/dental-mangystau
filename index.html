@@ -599,7 +599,10 @@ ul{margin:0;padding:0;list-style:none}
   .fab{display:flex}
 
   /* Hero: one centred call to action, pulled down to the bottom of the screen. */
-  .hero{min-height:94svh;padding-bottom:24px}
+  /* A full screen, so the next section cannot peek under the call to action.
+     svh, not dvh: the address bar is still showing while the page sits at the
+     top, and dvh would reflow the hero every time that bar slides away. */
+  .hero{min-height:100svh;padding-bottom:28px}
   /* Both buttons side by side need ~353px and there are 313px, so the phone
      keeps the single centred call to action. */
   .cta-pair .btn--ghost{display:none}
