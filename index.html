@@ -35,6 +35,12 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* The reveal animations park elements to the right until they slide in. Without
+   this the document is briefly wider than the screen, and a phone answers by
+   zooming out — which carries right-anchored fixed elements off the display.
+   `clip` rather than `hidden` so html stays a non-scrolling box and smooth
+   scrolling keeps working. */
+html{overflow-x:clip}
 body{
   margin:0;
   font-family:Manrope,-apple-system,Segoe UI,sans-serif;
@@ -533,6 +539,13 @@ ul{margin:0;padding:0;list-style:none}
 @media (max-width:1560px){
   .nav{display:none}
   .burger{display:grid}
+  /* Without the menu the centre track is pointless, and the two 1fr side tracks
+     are forced equal: the right one needs ~176px for the switcher and burger, so
+     the left got 176px for a 67px logo. That floor made the header ~432px wide,
+     which pushed a phone's layout viewport past its screen and carried the burger
+     and the floating button off the right edge. */
+  .hdr__in{grid-template-columns:auto auto}
+  .hdr__meta{grid-column:2}
 }
 @media (max-width:1100px){
   .svc-grid,.doc-grid{grid-template-columns:repeat(2,1fr)}
@@ -556,6 +569,8 @@ ul{margin:0;padding:0;list-style:none}
   /* :nth-child(n) only to match the specificity of the direction rules above */
   .cont-grid>:nth-child(n),.points-grid>:nth-child(n),
   .sec__head>:nth-child(n),.about__grid>:nth-child(n){--dx:0px;--dy:28px;transition-delay:0s}
+  /* Repeats the id so it outweighs #revRail's own offset above. */
+  #revRail{--dx:0px;--dy:28px}
   .hero__veil{background:linear-gradient(180deg,rgba(8,20,29,.5) 0%,rgba(8,20,29,0) 20%,rgba(10,26,37,.55) 42%,rgba(12,30,43,.9) 58%,rgba(14,34,49,.99) 78%)}
 
   /* One column reads better centred. The headings stack instead of relying on
